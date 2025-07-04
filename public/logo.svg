@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="Password Manager Icon">
+    <!-- Shield Shape -->
+    <path d="M32 4L8 14V30C8 45.25 18.667 56.083 32 60C45.333 56.083 56 45.25 56 30V14L32 4Z" fill="#0070f3"/>
+    
+    <!-- Lock Body -->
+    <rect x="24" y="26" width="16" height="16" rx="3" fill="white"/>
+    
+    <!-- Lock Shackle -->
+    <path d="M28 26V22C28 19.7909 29.7909 18 32 18C34.2091 18 36 19.7909 36 22V26" stroke="#0070f3" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Keyhole -->
+    <circle cx="32" cy="34" r="2" fill="#0070f3"/>
+  </g>
+</svg>
