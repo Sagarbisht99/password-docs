@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server";
 import { connectDb } from "@/lib/dbConnect";
 import Password from "@/models/Password";
-import type { NextRequest } from "next/server";
 
-// ✅ this is the correct signature
 export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
     await connectDb();
 
-    const { id } = context.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
