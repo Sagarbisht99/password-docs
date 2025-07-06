@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import Password from "@/models/Password";
 import { connectDb } from "@/lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
-import { encrypt } from "@/lib/encryption";
 
 export async function POST(req: Request) {
   try {
@@ -58,17 +57,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Encrypt the password before saving
-    console.log("Encrypting password...");
-    const encryptedPassword = encrypt(password);
-    console.log("Password encrypted successfully");
-
     // Create and save new Password document with userId from Clerk
     console.log("Creating new password document...");
     const newPassword = new Password({ 
       url, 
       username, 
-      password: encryptedPassword,
+      password,
       userId 
     });
     
@@ -76,9 +70,8 @@ export async function POST(req: Request) {
     await newPassword.save();
     console.log("Password saved successfully");
 
-    // Return response without the plain password
+    // Return response with the plain password
     const responseData = newPassword.toObject();
-    delete responseData.password; // Remove the encrypted password from response
 
     return NextResponse.json(
       {

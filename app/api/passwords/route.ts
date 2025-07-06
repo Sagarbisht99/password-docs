@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import Password from "@/models/Password";
 import { connectDb } from "@/lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
-import { decrypt } from "@/lib/encryption";
 
 export async function GET() {
   try {
@@ -24,22 +23,10 @@ export async function GET() {
     const passwords = await Password.find({ userId });
     console.log("Passwords found:", passwords.length);
 
-    // ✅ Decrypt on server
-    const decryptedPasswords = passwords.map((pwd) => {
-      const decrypted = decrypt(pwd.password);
-      return {
-        _id: pwd._id,
-        url: pwd.url,
-        username: pwd.username,
-        userId: pwd.userId,
-        password: decrypted,
-      };
-    });
-
     return NextResponse.json(
       {
         success: true,
-        data: decryptedPasswords,
+        data: passwords,
       },
       { status: 200 }
     );

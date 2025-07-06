@@ -148,8 +148,13 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       console.log("Fetched passwords:", data);
   
-      // ✅ Already decrypted passwords
-      setPasswords(data.data);
+      // Optimize: Only update if data has actually changed
+      setPasswords(prevPasswords => {
+        if (JSON.stringify(prevPasswords) === JSON.stringify(data.data)) {
+          return prevPasswords;
+        }
+        return data.data;
+      });
     } catch (err) {
       console.error("Error fetching passwords:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch passwords");
@@ -185,7 +190,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const editPassword = (password: PasswordData) => {
+  const editPassword = useCallback((password: PasswordData) => {
     setFormData({
       url: password.url,
       username: password.username,
@@ -194,7 +199,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     });
     setCurrentPasswordId(password._id);
     setEditMode(true);
-  };
+  }, []);
 
   const updateHandler = async (): Promise<void> => {
     try {
@@ -237,6 +242,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
       resetForm();
       setEditMode(false);
       setCurrentPasswordId(null);
+      await fetchPasswords();
       router.push("/password");
     } catch (err) {
       console.error("Error updating password:", err);

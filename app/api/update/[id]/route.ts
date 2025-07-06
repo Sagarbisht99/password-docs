@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDb } from "@/lib/dbConnect";
 import Password from "@/models/Password";
+import { auth } from "@clerk/nextjs/server";
 
 export async function PUT(
   req: Request,
@@ -8,6 +9,11 @@ export async function PUT(
 ) {
   try {
     await connectDb();
+
+    const { userId } = await auth(); // Get userId from Clerk
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const { id } = params;
     const { url, username, password } = await req.json();
@@ -23,14 +29,14 @@ export async function PUT(
       );
     }
 
-    const updatedPassword = await Password.findByIdAndUpdate(
-      id,
+    const updatedPassword = await Password.findOneAndUpdate(
+      { _id: id, userId }, // Find by _id AND userId
       { url, username, password },
       { new: true }
     );
 
     if (!updatedPassword) {
-      return NextResponse.json({ error: "Password not found" }, { status: 404 });
+      return NextResponse.json({ error: "Password not found or unauthorized" }, { status: 404 });
     }
 
     return NextResponse.json(

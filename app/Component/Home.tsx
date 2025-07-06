@@ -5,6 +5,7 @@ import Link from "next/link";
 import InfiniteCarousel from "./InfiniteCarousel";
 import { useTheme } from "../Contexts/ThemeContext";
 import { Button } from "../Component/ui/moving-border";
+import { AnimatedTooltipPreview } from "./AnimatedTooltipPreview";
 
 const Home = () => {
   const { theme } = useTheme();
@@ -13,6 +14,7 @@ const Home = () => {
     <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 text-center gap-10 py-12">
       {/* Content Wrapper */}
       <div className="flex flex-col items-center justify-center gap-6 w-full max-w-6xl z-10">
+        <AnimatedTooltipPreview />
         {/* Main Heading */}
         <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight lg:leading-[1.1] tracking-tight text-center">
           You {"Weren't"} Born to Remember Passwords
