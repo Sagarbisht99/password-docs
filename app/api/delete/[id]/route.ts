@@ -4,12 +4,12 @@ import Password from "@/models/Password";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -18,10 +18,16 @@ export async function DELETE(
     const deletedPassword = await Password.findByIdAndDelete(id);
 
     if (!deletedPassword) {
-      return NextResponse.json({ error: "Password not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Password not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ message: "Password deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Password deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Delete Error:", error);
     return NextResponse.json(
