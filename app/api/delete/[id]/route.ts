@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/dbConnect";
 import Password from "@/models/Password";
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  req: NextRequest,
+  context: { params: { id: string } } // ✅ CORRECT TYPE
 ) {
   try {
     await connectDb();
 
-    const { id } = await params;
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -18,21 +18,12 @@ export async function DELETE(
     const deletedPassword = await Password.findByIdAndDelete(id);
 
     if (!deletedPassword) {
-      return NextResponse.json(
-        { error: "Password not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Password not found" }, { status: 404 });
     }
 
-    return NextResponse.json(
-      { message: "Password deleted successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Password deleted successfully" }, { status: 200 });
   } catch (error) {
     console.error("Delete Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
