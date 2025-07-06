@@ -4,12 +4,12 @@ import Password from "@/models/Password";
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } } // ✅ CORRECT TYPE
+  context: { params: Record<string, string> } // ✅ FIXED TYPE
 ) {
   try {
     await connectDb();
 
-    const { id } = context.params;
+    const id = context.params.id;
 
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
