@@ -2,14 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/dbConnect";
 import Password from "@/models/Password";
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: Record<string, string> } // ✅ FIXED TYPE
-) {
+export async function DELETE(req: NextRequest) {
   try {
     await connectDb();
 
-    const id = context.params.id;
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop(); // get 'id' from the path
 
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
